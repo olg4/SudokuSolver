@@ -6,11 +6,6 @@
 # par des 0 dans le la grille initiale.
 
 
-
-
-
-
-
 # paramètres:
 # tab représente la grille
 #
@@ -21,81 +16,53 @@
 # carré (en général 3x3)
 #
 # retour: tableau final
-algo sudoku(tab:nxn entiers, dimCarré:entier,
-				dimTab:entier)
-
+algo sudoku(tab:nxn entiers, dimCarré:entier, dimTab:entier)
 
 
 # affiche la grille résolue
 algo afficheSolution()
 
 
-
-
 # teste une potientielle solution
-algo check(i:entier, j:entier, 
-				dimCarré:entier,
-					tab:nxn entiers) 
+algo check(i:entier, j:entier, dimCarré:entier, tab:nxn entiers) 
 
 	chiffre: entier
 	chiffre -> 1
 
-	tant que estValide(i, j, tab, dimCarré,
-						dimTab, chiffre)
+	tant que estValide(i, j, tab, dimCarré, dimTab, chiffre)
 
 
 # retourne vrai si le chiffre remplit
 # toutes les conditions avant de
 # l'écrire dans la grille
-algo estValide(i:entier, j:entier,
-				tab:nxn entiers,
-					dimCarré:entier,
-						dimTab:entier,
-							chiffre:entier)
+algo estValide(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:entier,chiffre:entier)
 
-	retourne uniqueCarré(i, j, tab,
-							dimCarré,
-								dimTab,
-								chiffre) ET
-			uniqueLigne(i, j, tab,
-							 dimTab,
-							 	chiffre) ET
-			uniqueColonne(i, j, tab,
-							dimTab,
-								chiffre)
+	retourne uniqueCarré(i, j, tab, dimCarré, dimTab, chiffre) ET
+		 uniqueLigne(i, j, tab, dimTab, chiffre) ET
+		 uniqueColonne(i, j, tab, dimTab, chiffre)
 			
-
-
 
 # vérifie si le chiffre n'est pas déjà 
 # présent dans le carré
 #
 # retourne un booléen
-algo uniqueCarré(i:entier, j:entier, 
-					tab:nxn entiers,
-						dimCarré:entier,
-							dimTab:entier,
-							chiffre:entier)
+algo uniqueCarré(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:entier,chiffre:entier)
 
 	ligne: entier
 	col: entier
 	ligne -> i - (i mod dimCarré)
 
-	tant que ligne < dimCarré ET
-			tab[ligne][col] =! chiffre
+	tant que ligne < dimCarré ET tab[ligne][col] =! chiffre
 
 		col -> j - (j mod dimCarré)
 		
-		tant que col < dimCarre ET
-			tab[ligne][col] =! chiffre ET 
-				(ligne != i ET col != j)
+		tant que col < dimCarre ET tab[ligne][col] =! chiffre ET (ligne != i ET col != j)
 		
 			col ++
 
 		ligne ++
 
-	retourne ligne == dimCarré ET
-				col == dimCarré
+	retourne ligne == dimCarré ET col == dimCarré
 
 		
 
@@ -103,15 +70,11 @@ algo uniqueCarré(i:entier, j:entier,
 # horizontalement
 #
 # retourne un booléen
-algo uniqueLigne(i:entier, j:entier,
-					tab:nxn entiers,
-						dimTab:entier,
-							chiffre:entier)
+algo uniqueLigne(i:entier, j:entier, tab:nxn entiers, dimTab:entier, chiffre:entier)
 
 	ligne: entier
 	ligne -> i
-	tant que ligne > dimTab ET
-		tab[ligne][j] =! chiffre faire
+	tant que ligne > dimTab ET tab[ligne][j] =! chiffre faire
 
 		ligne ++
 
@@ -123,15 +86,11 @@ algo uniqueLigne(i:entier, j:entier,
 # verticalement
 # 
 # retourne un booléen
-algo uniqueColonne(i:entier, j:entier,
-					tab:nxn entiers,
-						dimTab:entier,
-							chiffre:entier)
+algo uniqueColonne(i:entier, j:entier, tab:nxn entiers, dimTab:entier, chiffre:entier)
 
 	col: entier
 	col -> j
-	tant que col > dimTab ET
-		tab[i][col] =! chiffre faire
+	tant que col > dimTab ET tab[i][col] =! chiffre faire
 
 		col++
 
