@@ -4,6 +4,23 @@
 # le tableau rempli est retourné et 
 # affiché. Les cases vides sont représentés
 # par des 0 dans le la grille initiale.
+# Affiche également le nombre de récursivité.
+
+
+Lire le fichier texte qui contient la grille et remplir le tableau
+depuis ce fichier.
+
+
+classe Case
+privé:
+	réservé: booléen
+	valeur: entier
+public:
+	contructeur Case(réservé: booléen, valeur: entier)
+	méthode getRéservé() -> booléen
+	méthode getValeur() -> entier
+	méthode setValeur(valeur: entier)
+fin classe
 
 
 # paramètres:
@@ -16,7 +33,9 @@
 # carré (en général 3x3)
 #
 # retour: tableau final
-algo sudoku(tab:nxn entiers, dimCarré:entier, dimTab:entier)
+algo sudoku(tab:nxn Case, dimCarré:entier, dimTab:entier)
+
+	remplir(0, 0, dimCarré, tab, dimTab) 
 
 
 # affiche la grille résolue
@@ -24,18 +43,40 @@ algo afficheSolution()
 
 
 # teste une potientielle solution
-algo check(i:entier, j:entier, dimCarré:entier, tab:nxn entiers) 
-
+algo remplir(i:entier, j:entier, dimCarré:entier, tab:nxn Case, dimTab:entier) 
+	
+	si j == dimTab ET i == dimTab alors
+		retourne VRAI					// l'ensemble de la grille est remplie
+	
+	sinon si j == dimTab ET i < dimTab alors
+		j -> 0
+		i ++
+		
 	chiffre: entier
+	ok: booléen
 	chiffre -> 1
+	ok -> FAUX
 
-	tant que estValide(i, j, tab, dimCarré, dimTab, chiffre)
+	si NON tab[i][j].getRéservé() alors
+		tant que chiffre <= dimCarré ET NON OK faire
+			si estValide(i, j, tab, dimCarré, chiffre) alors
+				tab[i][j].setValeur(chiffre)
+				ok = remplir(i, j+1, dimCarré, tab, dimTab) 
+				
+			chiffre ++
+			
+		retourne ok
+				
+	sinon
+		retourne remplir(i, j+1, dimCarré, tab, dimTab) 				
+				
+		
 
 
 # retourne vrai si le chiffre remplit
 # toutes les conditions avant de
 # l'écrire dans la grille
-algo estValide(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:entier,chiffre:entier)
+algo estValide(i:entier, j:entier, tab:nxn Case, dimCarré:entier, dimTab:entier,chiffre:entier)
 
 	retourne uniqueCarré(i, j, tab, dimCarré, dimTab, chiffre) ET
 		 uniqueLigne(i, j, tab, dimTab, chiffre) ET
@@ -46,17 +87,18 @@ algo estValide(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:ent
 # présent dans le carré
 #
 # retourne un booléen
-algo uniqueCarré(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:entier,chiffre:entier)
+algo uniqueCarré(i:entier, j:entier, tab:nxn Case, dimCarré:entier, dimTab:entier,chiffre:entier)
 
 	ligne: entier
 	col: entier
 	ligne -> i - (i mod dimCarré)
+	col -> j - (j mod dimCarré)
 
-	tant que ligne < dimCarré ET tab[ligne][col] =! chiffre
+	tant que ligne < dimCarré ET tab[ligne][col].getValeur() != chiffre
 
 		col -> j - (j mod dimCarré)
 		
-		tant que col < dimCarre ET tab[ligne][col] =! chiffre ET (ligne != i ET col != j)
+		tant que col < dimCarre ET tab[ligne][col].getValeur() != chiffre ET (ligne != i ET col != j)
 		
 			col ++
 
@@ -70,11 +112,11 @@ algo uniqueCarré(i:entier, j:entier, tab:nxn entiers, dimCarré:entier, dimTab:
 # horizontalement
 #
 # retourne un booléen
-algo uniqueLigne(i:entier, j:entier, tab:nxn entiers, dimTab:entier, chiffre:entier)
+algo uniqueLigne(i:entier, j:entier, tab:nxn Case, dimTab:entier, chiffre:entier)
 
 	ligne: entier
 	ligne -> i
-	tant que ligne > dimTab ET tab[ligne][j] =! chiffre faire
+	tant que ligne > dimTab ET tab[ligne][j].getValeur() != chiffre faire
 
 		ligne ++
 
@@ -86,11 +128,11 @@ algo uniqueLigne(i:entier, j:entier, tab:nxn entiers, dimTab:entier, chiffre:ent
 # verticalement
 # 
 # retourne un booléen
-algo uniqueColonne(i:entier, j:entier, tab:nxn entiers, dimTab:entier, chiffre:entier)
+algo uniqueColonne(i:entier, j:entier, tab:nxn Case, dimTab:entier, chiffre:entier)
 
 	col: entier
 	col -> j
-	tant que col > dimTab ET tab[i][col] =! chiffre faire
+	tant que col > dimTab ET tab[i][col].getValeur() != chiffre faire
 
 		col++
 
