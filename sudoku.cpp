@@ -47,7 +47,7 @@ bool uniqueCarre(int i, int j, vector<vector<Case>>& tab, int dimCarre, int dimT
 		l = 0;
 		col = j - (j % dimCarre);
 		while (l < dimCarre && !existeDeja) {
-			if (tab[ligne][col].getValeur() == chiffre && !existeDeja) {
+			if (tab[ligne][col].getValeur() == chiffre) {
 				existeDeja = true;
 			}
 			l ++;
@@ -104,36 +104,22 @@ bool estRempli(vector<vector<Case>>& tab, int dimTab) {
 }
 
 bool remplir(int i, int j, int dimCarre, vector<vector<Case>>& tab, int dimTab) {
-	if (tab[i][j].getReserve()) j ++;
-
+	if (i == dimTab-1 && j == dimTab) return true;
 	if (j >= dimTab && i < dimTab) {
 		j = 0;
 		i ++;
 	}
-
+	if (tab[i][j].getReserve()) return remplir(i, j+1, dimCarre, tab, dimTab);
 	for (int chiffre = 1; chiffre <= dimTab; chiffre ++) {
 		if (estValide(i, j, tab, dimCarre, dimTab, chiffre)) {
 			tab[i][j].setValeur(chiffre);
-			if (j == dimTab-1 && i == dimTab-1) return true;
-			else {
-				compteurDeRecursivite ++;
-				remplir(i, j + 1, dimCarre, tab, dimTab);
-			}
-
-			if (estRempli(tab, dimTab)) return true;
+			compteurDeRecursivite ++;
+			if (remplir(i, j+1, dimCarre, tab, dimTab)) return true;
 		}
 	}
 	tab[i][j].setValeur(0);
-	return false;			// retourne en arrière pour tester un autre chiffre
-	
-}
-
-void sudoku(vector<vector<Case>>& tab, int dimCarre, int dimTab) {
-	if (remplir(0, 0, dimCarre, tab, dimTab)) {
-		cout << "done" << endl;
-	} else {
-		cout << "ERROR" << endl;
-	}
+	return false;
+		
 }
 
 void afficherLigne() {
@@ -155,6 +141,14 @@ void afficherSolution(vector<vector<Case>>& tab, int dimCarre, int dimTab) {
 		if ((i+1) % dimCarre == 0) {
 			afficherLigne();
 		}
+	}
+}
+
+void sudoku(vector<vector<Case>>& tab, int dimCarre, int dimTab) {
+	if (remplir(0, 0, dimCarre, tab, dimTab)) {
+		cout << "done" << endl;
+	} else {
+		cout << "ERROR" << endl;
 	}
 }
 
@@ -200,7 +194,6 @@ int main(int argc, char** argv) {
 		}
 
 		theFile.close();
-
 		sudoku(tab, dimCarre, dimTab);
 		afficherSolution(tab, dimCarre, dimTab);
 		cout << "Recursive calls: " << compteurDeRecursivite << endl;

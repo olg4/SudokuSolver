@@ -39,38 +39,52 @@ algo sudoku(tab:nxn Case, dimCarré:entier, dimTab:entier)
 
 
 # affiche la grille résolue
-algo afficheSolution()
+algo afficheSolution(tab:nxn Case, dimCarre:entier, dimTab:entier)
+
+	afficher_ligne()
+	pour i de 0 à dimTab faire
+		afficher_séparateur()
+		pour j de 0 à dimTab faire
+			afficher tab[i][j].getValeur() et afficher_espace()
+			si j != 0 ET j+1 mod dimCarre vaut 0 alors
+				afficher_séparateur()
+		passe à la ligne
+		si i+1 mod dimCarre vaut 0 alors
+			afficher_ligne()
+
+
+# retourne un booléen
+algo estRempli(tab:nxn Case, dimTab:entier)
+	
+	pour i de 0 à dimTab faire
+		pour j de 0 à dimTab faire
+			si tab[i][j].getValeur() vaut 0 alors
+				retourne FAUX
+	retourne VRAI
 
 
 # teste une potientielle solution
+# retourne un booléen
 algo remplir(i:entier, j:entier, dimCarré:entier, tab:nxn Case, dimTab:entier) 
 	
-	si j == dimTab ET i == dimTab alors
-		retourne VRAI					// l'ensemble de la grille est remplie
-	
-	sinon si j == dimTab ET i < dimTab alors
+	si i vaut dimTab - 1 ET j vaut dimTab alors
+		retourne VRAI
+	si j >= dimTab ET i < dimTab alors
 		j -> 0
 		i ++
-		
-	chiffre: entier
-	ok: booléen
-	chiffre -> 1
-	ok -> FAUX
 
-	si NON tab[i][j].getRéservé() alors
-		tant que chiffre <= dimCarré ET NON OK faire
-			si estValide(i, j, tab, dimCarré, chiffre) alors
-				tab[i][j].setValeur(chiffre)
-				ok = remplir(i, j+1, dimCarré, tab, dimTab) 
-				
-			chiffre ++
-			
-		retourne ok
-				
-	sinon
-		retourne remplir(i, j+1, dimCarré, tab, dimTab) 				
-				
-		
+	si tab[i][j].getReserve() alors
+		retourne remplir(i, j+1, dimCarre, tab, dimTab)
+
+	pour chiffre de 1 à dimTab faire
+		si estValide(i, j, tab, dimCarre, dimTab, chiffre)
+			tab[i][j].setValeur(chiffre)
+			si remplir(i, j+1, dimCarre, tab, dimTab) alors
+				retourne VRAI
+
+	tab[i][j].setValeur(0)
+	retourne FAUX	
+
 
 
 # retourne vrai si le chiffre remplit
@@ -91,20 +105,26 @@ algo uniqueCarré(i:entier, j:entier, tab:nxn Case, dimCarré:entier, dimTab:ent
 
 	ligne: entier
 	col: entier
-	ligne -> i - (i mod dimCarré)
-	col -> j - (j mod dimCarré)
-
-	tant que ligne < dimCarré ET tab[ligne][col].getValeur() != chiffre
-
-		col -> j - (j mod dimCarré)
-		
-		tant que col < dimCarre ET tab[ligne][col].getValeur() != chiffre ET (ligne != i ET col != j)
-		
+	k: entier
+	l: entier
+	existeDéjà: booléen
+	
+	ligne -> i - (i mod dimCarre)
+	k -> 0
+	existeDéjà -> FAUX
+	
+	tant que k < dimCarre ET NON existeDéjà faire
+		l -> 0
+		col -> j - (j mod dimCarre)
+		tant que l < dimCarre ET NON existeDéjà faire
+			si tab[ligne][col].getValeur() vaut chiffre faire
+				existeDéjà -> VRAI
+			l ++
 			col ++
-
+		k ++
 		ligne ++
-
-	retourne ligne == dimCarré ET col == dimCarré
+		
+	retourne NON existeDéjà
 
 		
 
@@ -115,12 +135,17 @@ algo uniqueCarré(i:entier, j:entier, tab:nxn Case, dimCarré:entier, dimTab:ent
 algo uniqueLigne(i:entier, j:entier, tab:nxn Case, dimTab:entier, chiffre:entier)
 
 	ligne: entier
-	ligne -> i
-	tant que ligne > dimTab ET tab[ligne][j].getValeur() != chiffre faire
+	ligne -> 0
+	existeDéjà: booléen
+	existeDéjà -> FAUX
+	
+	tant que ligne < dimTab NON existeDéjà faire
+		si tab[ligne][j].getValeur() vaut chiffre alors
+			existeDéjà -> VRAI
 
 		ligne ++
 
-	retourne ligne == dimTab
+	retourne NON existeDéjà
 
 
 
@@ -131,9 +156,13 @@ algo uniqueLigne(i:entier, j:entier, tab:nxn Case, dimTab:entier, chiffre:entier
 algo uniqueColonne(i:entier, j:entier, tab:nxn Case, dimTab:entier, chiffre:entier)
 
 	col: entier
-	col -> j
-	tant que col > dimTab ET tab[i][col].getValeur() != chiffre faire
+	col -> 0
+	existeDéjà: booléen
+	existeDéjà -> FAUX
+	tant que col < dimTab ET NON existeDéjà faire
+		si tab[i][col].getValeur() vaut chiffre alors
+			existeDéjà -> VRAI
 
 		col++
 
-	retourne col == dimTab
+	retourne NON existeDéjà
