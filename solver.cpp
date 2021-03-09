@@ -1,7 +1,5 @@
 # include "solver.hpp"
 
-int compteurDeRecursivite = -1;
-
 bool sudoku(vector<vector<Case>>& tab, int dimCarre, int dimTab) {
 	if (remplir(0, 0, dimCarre, tab, dimTab)) return true;
 	else return false;
@@ -17,7 +15,6 @@ bool remplir(int i, int j, int dimCarre, vector<vector<Case>>& tab, int dimTab) 
 	for (int chiffre = 1; chiffre <= dimTab; chiffre ++) {
 		if (estValide(i, j, tab, dimCarre, dimTab, chiffre)) {
 			tab[i][j].setValeur(chiffre);
-			compteurDeRecursivite ++;
 			if (remplir(i, j+1, dimCarre, tab, dimTab)) return true;
 		}
 	}
