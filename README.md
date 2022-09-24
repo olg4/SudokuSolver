@@ -17,3 +17,8 @@
 > $ make
 > $ ./sudokuSolver <file containing sudoku>
 > ```
+  
+  #
+  
+  ### example
+  <img src="overview.png" width="500" align="left"/>
