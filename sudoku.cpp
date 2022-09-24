@@ -60,7 +60,6 @@ int main(int argc, char** argv) {
 		theFile.close();
 		sudoku(tab, dimCarre, dimTab);
 		afficherSolution(tab, dimCarre, dimTab);
-		cout << "Recursive calls: " << compteurDeRecursivite << endl;
 	}
 
 	return 0;
